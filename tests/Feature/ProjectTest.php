@@ -13,8 +13,6 @@ class ProjectTest extends TestCase
     /** @test */
     public function an_user_can_create_a_project()
     {
-        $this->withoutExceptionHandling();
-
         $attr = factory(Project::class)->raw();
 
         $this->post(route('projects.store'), $attr)->assertRedirect(route('projects.index'));
@@ -24,13 +22,31 @@ class ProjectTest extends TestCase
     }
 
     /** @test */
-    public function an_user_list__projects()
+    public function an_user_list_projects()
     {
-        $this->withoutExceptionHandling();
-
         $project = factory(Project::class)->create();
 
         $this->get(route('projects.index'))->assertSee($project['title']);
 
+    }
+
+    /** @test */
+    public function a_project_requires_a_title()
+    {
+        $attr = factory(Project::class)->raw([
+            'title' => ''
+        ]);
+
+        $this->post(route('projects.store'), $attr)->assertSessionHasErrors('title');
+    }
+
+    /** @test */
+    public function a_project_requires_a_description()
+    {
+        $attr = factory(Project::class)->raw([
+            'description' => ''
+        ]);
+
+        $this->post(route('projects.store'), $attr)->assertSessionHasErrors('description');
     }
 }
