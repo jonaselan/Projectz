@@ -51,6 +51,16 @@ class ProjectTest extends TestCase
     }
 
     /** @test */
+    public function a_project_requires_an_owner()
+    {
+        $attr = factory(Project::class)->raw([
+            'owner_id' => null
+        ]);
+
+        $this->post(route('projects.store'), $attr)->assertSessionHasErrors('owner');
+    }
+
+    /** @test */
     public function a_user_can_view_a_project()
     {
         $project = factory(Project::class)->create();
