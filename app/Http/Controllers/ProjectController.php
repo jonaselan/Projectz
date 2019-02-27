@@ -37,6 +37,7 @@ class ProjectController extends Controller
      */
     public function store(ProjectResquet $request)
     {
+        $request->owner_id = auth()->user()->id;
         Project::create($request->all());
 
         return redirect(route('projects.index'));
@@ -71,7 +72,7 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProjectResquet $request, $id)
     {
         //
     }

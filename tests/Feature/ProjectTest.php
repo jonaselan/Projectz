@@ -11,19 +11,23 @@ class ProjectTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function an_user_can_create_a_project()
+    public function an_authenticated_user_can_create_a_project()
     {
+        $this->signInUser();
+
         $attr = factory(Project::class)->raw();
 
-        $this->post(route('projects.store'), $attr)->assertRedirect(route('projects.index'));
+        $this->post(route('projects.store'), $attr)
+                ->assertRedirect(route('projects.index'));
 
         $this->assertDatabaseHas('projects', $attr);
-
     }
 
     /** @test */
-    public function an_user_list_projects()
+    public function an_authenticated_user_list_projects()
     {
+        $this->signInUser();
+
         $project = factory(Project::class)->create();
 
         $this->get(route('projects.index'))->assertSee($project['title']);
@@ -31,8 +35,23 @@ class ProjectTest extends TestCase
     }
 
     /** @test */
+    public function a_authenticated_user_can_view_a_project()
+    {
+        $this->signInUser();
+
+        $project = factory(Project::class)->create();
+
+        $this->get(route('projects.show', $project))
+            ->assertSee($project->title)
+            ->assertSee($project->description);
+
+    }
+
+    /** @test */
     public function a_project_requires_a_title()
     {
+        $this->signInUser();
+
         $attr = factory(Project::class)->raw([
             'title' => ''
         ]);
@@ -43,6 +62,8 @@ class ProjectTest extends TestCase
     /** @test */
     public function a_project_requires_a_description()
     {
+        $this->signInUser();
+
         $attr = factory(Project::class)->raw([
             'description' => ''
         ]);
@@ -53,21 +74,13 @@ class ProjectTest extends TestCase
     /** @test */
     public function a_project_requires_an_owner()
     {
+        $this->signInUser();
+
         $attr = factory(Project::class)->raw([
             'owner_id' => null
         ]);
 
-        $this->post(route('projects.store'), $attr)->assertSessionHasErrors('owner');
+        $this->post(route('projects.store'), $attr)->assertSessionHasErrors('owner_id');
     }
 
-    /** @test */
-    public function a_user_can_view_a_project()
-    {
-        $project = factory(Project::class)->create();
-
-        $this->get(route('projects.show', $project))
-            ->assertSee($project->title)
-            ->assertSee($project->description);
-
-    }
 }
