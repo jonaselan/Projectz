@@ -19,27 +19,27 @@
                     <h2 class="text-lg text-grey font-normal mb-3">Tasks</h2>
 
                     {{-- tasks --}}
-                    {{--@foreach ($project->tasks as $task)--}}
-                        {{--<div class="card mb-3">--}}
-                            {{--<form method="POST" action="{{ $task->path() }}">--}}
-                                {{--@method('PATCH')--}}
-                                {{--@csrf--}}
+                    @foreach ($project->tasks as $task)
+                        <div class="card mb-3">
+                            <form method="POST" action="">
+                                @method('PATCH')
+                                @csrf
 
-                                {{--<div class="flex items-center">--}}
-                                    {{--<input name="body" value="{{ $task->body }}" class="w-full {{ $task->completed ? 'text-grey' : '' }}">--}}
-                                    {{--<input name="completed" type="checkbox" onChange="this.form.submit()" {{ $task->completed ? 'checked' : '' }}>--}}
-                                {{--</div>--}}
-                            {{--</form>--}}
-                        {{--</div>--}}
-                    {{--@endforeach--}}
+                                <div class="flex items-center">
+                                    <input name="body" value="{{ $task->body }}" class="w-full {{ $task->completed ? 'text-grey' : '' }}">
+                                    <input name="completed" type="checkbox" onChange="this.form.submit()" {{ $task->completed ? 'checked' : '' }}>
+                                </div>
+                            </form>
+                        </div>
+                    @endforeach
 
-                    {{--<div class="card mb-3">--}}
-                        {{--<form action="{{ $project->path() . '/tasks' }}" method="POST">--}}
-                            {{--@csrf--}}
+                    <div class="card mb-3">
+                        <form action="{!! route('projects.tasks.store', $project) !!}" method="POST">
+                            @csrf
 
-                            {{--<input placeholder="Add a new task..." class="w-full" name="body">--}}
-                        {{--</form>--}}
-                    {{--</div>--}}
+                            <input placeholder="Add a new task..." class="w-full" name="body">
+                        </form>
+                    </div>
                 </div>
 
                 {{--<div>--}}

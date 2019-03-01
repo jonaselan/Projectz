@@ -13,9 +13,9 @@
 
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'projects'], function() {
-        Route::post('/', 'ProjectController@store')->name('projects.store');
+        Route::get('', 'ProjectController@index')->name('projects.index');
         Route::get('/create', 'ProjectController@create')->name('projects.create');
-        Route::get('/', 'ProjectController@index')->name('projects.index');
+        Route::post('', 'ProjectController@store')->name('projects.store');
         Route::get('/{project}', 'ProjectController@show')->name('projects.show');
 
         Route::post('/{project}/tasks', 'TaskController@store')->name('projects.tasks.store');

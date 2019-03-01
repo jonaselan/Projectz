@@ -36,9 +36,12 @@ class TaskController extends Controller
      */
     public function store(TaskRequest $request, Project $project)
     {
+        if (auth()->user()->isNot($project->owner))
+            abort(403);
+
         $project->tasks()->create($request->all());
 
-        return redirect(route('projects.index'));
+        return redirect(route('projects.show', $project));
     }
 
     /**
@@ -49,10 +52,7 @@ class TaskController extends Controller
      */
     public function show(Project $project)
     {
-        if (auth()->user()->isNot($project->owner))
-            abort(403);
-
-        return view('projects.show', compact('project'));
+        //
     }
 
     /**

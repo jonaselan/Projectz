@@ -3,7 +3,7 @@
         <a href="{!! route('projects.show', $project) !!}" class="text-black no-underline">{{ $project->title }}</a>
     </h3>
 
-    <div class="text-grey mb-4">{{ str_limit($project->description, 100) }}</div>
+    <div class="text-grey pl-4 mb-4">{{ str_limit($project->description, 100) }}</div>
 
     <footer>
         {{--<form method="POST" action="{{ $project->path() }}" class="text-right">--}}

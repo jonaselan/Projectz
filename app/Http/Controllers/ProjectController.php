@@ -38,7 +38,6 @@ class ProjectController extends Controller
      */
     public function store(ProjectRequest $request)
     {
-        $request->owner_id = auth()->user()->id;
         Project::create($request->all());
 
         return redirect(route('projects.index'));

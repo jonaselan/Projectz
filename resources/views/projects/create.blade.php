@@ -1,7 +1,7 @@
 @extends ('layouts.app')
 
 @section('content')
-    <form method="POST" action="/projects">
+    <form method="POST" action="{!! route('projects.store') !!}">
         @csrf
 
         <h1 class="heading is-1">Create a Project</h1>
@@ -21,6 +21,7 @@
                 <textarea name="description" class="textarea"></textarea>
             </div>
         </div>
+        <input type="hidden" name="owner_id" value="{!! auth()->user()->id !!}">
 
         <div class="field">
             <div class="control">
