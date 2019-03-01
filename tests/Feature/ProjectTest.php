@@ -18,6 +18,8 @@ class ProjectTest extends TestCase
 
         $attr = factory(Project::class)->raw();
 
+        $this->get(route('projects.create'))->assertStatus(200);
+
         $this->post(route('projects.store'), $attr)
                 ->assertRedirect(route('projects.index'));
 
@@ -69,7 +71,13 @@ class ProjectTest extends TestCase
     /** @test */
     public function guest_may_not_list_projects()
     {
-        $this->get('/projects')->assertRedirect('login');
+        $this->get(route('projects.index'))->assertRedirect('login');
+    }
+
+    /** @test */
+    public function guest_may_not_view_form_for_create_projects()
+    {
+        $this->get(route('projects.create'))->assertRedirect('login');
     }
 
     /** @test */
@@ -83,7 +91,7 @@ class ProjectTest extends TestCase
     /** @test */
     public function guest_may_not_create_a_project()
     {
-        $this->post('/projects')->assertRedirect('login');
+        $this->post(route('projects.store'))->assertRedirect('login');
     }
 
     /** @test */
