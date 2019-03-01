@@ -1,6 +1,6 @@
 <?php
 
-use App\Project;
+use App\Task;
 use Faker\Generator as Faker;
 
 /*
@@ -16,12 +16,16 @@ use Faker\Generator as Faker;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-$factory->define(Project::class, function (Faker $faker) {
+$factory->define(Task::class, function (Faker $faker) {
     return [
-        'title' => $faker->title,
-        'description' => $faker->paragraph,
-        'owner_id' => function () {
-            return factory(App\User::class)->create()->id;
+        'body' => $faker->text,
+        'completed' => true,
+        'project_id' => function () {
+            return factory(App\Project::class)->create()->id;
         }
     ];
 });
+
+$factory->state(Task::class, 'imcompleted', [
+   'completed' => false
+]);

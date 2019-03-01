@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskRequest;
 use App\Project;
-use App\Http\Requests\ProjectRequest;
-use Illuminate\Support\Facades\Auth;
 
-class ProjectController extends Controller
+class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,9 +14,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::where('owner_id', Auth::id())->get();
-
-        return view('projects.index', compact('projects'));
+        //
     }
 
     /**
@@ -27,19 +24,19 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('projects.create');
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param ProjectRequest $request
+     * @param TaskRequest $request
+     * @param Project $project
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(ProjectRequest $request)
+    public function store(TaskRequest $request, Project $project)
     {
-        $request->owner_id = auth()->user()->id;
-        Project::create($request->all());
+        $project->tasks()->create($request->all());
 
         return redirect(route('projects.index'));
     }
@@ -76,7 +73,7 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ProjectRequest $request, $id)
+    public function update(TaskRequest $request, $id)
     {
         //
     }

@@ -12,10 +12,14 @@
 */
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::post('/projects', 'ProjectController@store')->name('projects.store');
-    Route::get('/projects/create', 'ProjectController@create')->name('projects.create');
-    Route::get('/projects', 'ProjectController@index')->name('projects.index');
-    Route::get('/projects/{project}', 'ProjectController@show')->name('projects.show');
+    Route::group(['prefix' => 'projects'], function() {
+        Route::post('/', 'ProjectController@store')->name('projects.store');
+        Route::get('/create', 'ProjectController@create')->name('projects.create');
+        Route::get('/', 'ProjectController@index')->name('projects.index');
+        Route::get('/{project}', 'ProjectController@show')->name('projects.show');
+
+        Route::post('/{project}/tasks', 'TaskController@store')->name('projects.tasks.store');
+    });
 
     Route::get('/home', 'HomeController@index')->name('home');
 });
