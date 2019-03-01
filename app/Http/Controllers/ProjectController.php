@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Project;
 use App\Http\Requests\ProjectResquet;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -14,7 +15,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::where('owner_id', Auth::id())->get();
 
         return view('projects.index', compact('projects'));
     }
@@ -32,8 +33,8 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param ProjectResquet $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(ProjectResquet $request)
     {
@@ -51,6 +52,9 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        if (auth()->user()->isNot($project->owner))
+            abort(403);
+
         return view('projects.show', compact('project'));
     }
 

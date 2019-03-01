@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Project;
+use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -24,27 +25,65 @@ class ProjectTest extends TestCase
     }
 
     /** @test */
-    public function an_authenticated_user_list_projects()
+    public function an_authenticated_user_list_projects_that_he_created()
     {
-        $this->signInUser();
+        $auth_user = factory(User::class)->create();
+        $this->signInUser($auth_user);
+        $user_project = factory(Project::class)->create([
+            'owner_id' => $auth_user->id
+        ]);
 
-        $project = factory(Project::class)->create();
+        $other_user = factory(User::class)->create();
+        $other_project = factory(Project::class)->create([
+            'owner_id' => $other_user->id
+        ]);
 
-        $this->get(route('projects.index'))->assertSee($project['title']);
-
+        $this->get(route('projects.index'))
+            ->assertSee($user_project['title'])
+            ->assertDontSee($other_project['title']);
     }
 
     /** @test */
-    public function a_authenticated_user_can_view_a_project()
+    public function a_authenticated_user_can_view_only_project_that_he_created()
     {
-        $this->signInUser();
+        $auth_user = factory(User::class)->create();
+        $this->signInUser($auth_user);
+        $user_project = factory(Project::class)->create([
+            'owner_id' => $auth_user->id
+        ]);
 
+        $other_user = factory(User::class)->create();
+        $other_project = factory(Project::class)->create([
+            'owner_id' => $other_user->id
+        ]);
+
+        $this->get(route('projects.show', $user_project))
+            ->assertSee($user_project->title)
+            ->assertSee($user_project->description)
+            ->assertDontSee($other_project->title);
+
+        $this->get(route('projects.show', $other_project))
+            ->assertStatus(403);
+    }
+
+    /** @test */
+    public function guest_may_not_list_projects()
+    {
+        $this->get('/projects')->assertRedirect('login');
+    }
+
+    /** @test */
+    public function guest_may_not_view_a_single_project()
+    {
         $project = factory(Project::class)->create();
 
-        $this->get(route('projects.show', $project))
-            ->assertSee($project->title)
-            ->assertSee($project->description);
+        $this->get(route('projects.show', $project))->assertRedirect('login');
+    }
 
+    /** @test */
+    public function guest_may_not_create_a_project()
+    {
+        $this->post('/projects')->assertRedirect('login');
     }
 
     /** @test */
