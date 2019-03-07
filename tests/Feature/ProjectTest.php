@@ -14,11 +14,15 @@ class ProjectTest extends TestCase
     /** @test */
     public function an_authenticated_user_can_create_a_project()
     {
-        $this->signInUser();
+        $user = factory(User::class)->create();
+        $this->signInUser($user);
 
-        $attr = factory(Project::class)->raw();
+        $attr = factory(Project::class)->raw([
+            'owner_id' => $user->id
+        ]);
 
-        $this->get(route('projects.create'))->assertStatus(200);
+        $this->get(route('projects.create'))
+            ->assertStatus(200);
 
         $this->post(route('projects.store'), $attr)
                 ->assertRedirect(route('projects.index'));

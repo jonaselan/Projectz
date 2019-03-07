@@ -36,9 +36,9 @@ class ProjectController extends Controller
      * @param ProjectRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(ProjectRequest $request)
+    public function store()
     {
-        Project::create($request->all());
+        auth()->user()->projects()->create($this->validateRequest());
 
         return redirect(route('projects.index'));
     }
@@ -106,7 +106,8 @@ class ProjectController extends Controller
         return request()->validate([
             'title' => 'sometimes|required',
             'description' => 'sometimes|required',
-            'notes' => 'nullable'
+            'owner_id' => 'sometimes|required',
+//            'notes' => 'nullable'
         ]);
     }
 }
