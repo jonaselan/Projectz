@@ -70,6 +70,16 @@ class ProjectTest extends TestCase
         ]);
     }
 
+    public function an_authenticated_user_cannot_update_the_projects_of_others()
+    {
+        $this->signInUser();
+
+        $project = factory(Project::class)->create();
+
+        $this->patch(route('projects.update', $project, []))
+            ->assertStatus(403);
+    }
+
     /** @test */
     public function a_authenticated_user_can_view_only_project_that_he_created()
     {
