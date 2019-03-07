@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskRequest;
 use App\Project;
+use App\Task;
 
 class TaskController extends Controller
 {
@@ -67,15 +68,24 @@ class TaskController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the project.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Project $project
+     * @param  Task    $task
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(TaskRequest $request, $id)
+    public function update(Project $project, Task $task)
     {
-        //
+        if (auth()->user()->isNot($project->owner)) {
+            abort(403);
+        }
+
+        $task->update([
+            'body' => request('body'),
+            'completed' => request()->has('completed')
+        ]);
+
+        return view('projects.show', compact('project'));
     }
 
     /**

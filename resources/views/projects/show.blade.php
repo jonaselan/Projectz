@@ -21,7 +21,7 @@
                     {{-- tasks --}}
                     @foreach ($project->tasks as $task)
                         <div class="card mb-3">
-                            <form method="POST" action="">
+                            <form method="POST" action="{!! route('projects.tasks.update', [$project, $task]) !!}">
                                 @method('PATCH')
                                 @csrf
 

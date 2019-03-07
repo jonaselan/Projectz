@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Project;
 use App\Task;
+use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -36,6 +37,57 @@ class ProjectTaskTest extends TestCase
         ]);
     }
 
+    /** @test */
+    function a_task_can_be_updated()
+    {
+        $this->signInUser();
+
+        $project = auth()->user()->projects()->create(
+            factory(Project::class)->raw()
+        );
+
+        $this->post(route('projects.tasks.store', $project), [
+            'body' => 'task body test'
+        ]);
+        $task = Task::all()->first();
+
+        $this->patch(route('projects.tasks.update', [$project, $task]), [
+            'body' => 'changed',
+            'completed' => true
+        ]);
+
+        $this->assertDatabaseHas('tasks', [
+            'body' => 'changed',
+            'completed' => true
+        ]);
+    }
+
+    /** @test */
+    public function sync_updated_at_of_project_when_update_related_task()
+    {
+        $this->signInUser();
+
+        $project = auth()->user()->projects()->create(
+            factory(Project::class)->raw([
+                'created_at' => now()->subDay(),
+                'updated_at' => now()->subDay(),
+            ])
+        );
+
+        $this->post(route('projects.tasks.store', $project), [
+            'body' => 'task body test'
+        ]);
+        /** @var Task $task */
+        $task = Task::all()->first();
+
+        $this->patch(route('projects.tasks.update', [$project, $task]), [
+            'body' => 'changed',
+            'completed' => true
+        ]);
+
+        $project->refresh();
+        $this->assertEquals($task->updated_at, $project->updated_at);
+    }
 
     /** @test */
     public function a_project_can_have_tasks()
