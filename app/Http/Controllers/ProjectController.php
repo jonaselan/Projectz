@@ -71,7 +71,6 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param ProjectRequest $request
      * @param Project $project
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -107,7 +106,7 @@ class ProjectController extends Controller
             'title' => 'sometimes|required',
             'description' => 'sometimes|required',
             'owner_id' => 'sometimes|required',
-//            'notes' => 'nullable'
+            'notes' => 'nullable'
         ]);
     }
 }

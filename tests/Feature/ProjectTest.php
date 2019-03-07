@@ -86,6 +86,7 @@ class ProjectTest extends TestCase
 
         $this->get(route('projects.show', $user_project))
             ->assertSee($user_project->title)
+            ->assertSee($user_project->notes)
             ->assertDontSee($other_project->title);
 
         $this->get(route('projects.show', $other_project))
