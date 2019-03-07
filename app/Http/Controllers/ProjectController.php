@@ -71,13 +71,18 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param ProjectRequest $request
+     * @param Project $project
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function update(ProjectRequest $request, $id)
+    public function update(Project $project)
     {
-        //
+        if (auth()->user()->isNot($project->owner))
+            abort(403);
+
+        $project->update($this->validateRequest());
+
+        return redirect(route('projects.show', $project));
     }
 
     /**
@@ -89,5 +94,19 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Validate the request attributes.
+     *
+     * @return array
+     */
+    protected function validateRequest()
+    {
+        return request()->validate([
+            'title' => 'sometimes|required',
+            'description' => 'sometimes|required',
+            'notes' => 'nullable'
+        ]);
     }
 }

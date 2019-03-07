@@ -46,6 +46,27 @@ class ProjectTest extends TestCase
     }
 
     /** @test */
+    public function a_user_can_update_project()
+    {
+        $user = factory(User::class)->create();
+        $this->signInUser($user);
+
+        $project = auth()->user()->projects()->create(
+            factory(Project::class)->raw([
+                'owner_id' => $user->id
+            ])
+        );
+
+        $this->patch(route('projects.update', $project),[
+            'title' => 'changed'
+        ]);
+
+        $this->assertDatabaseHas('projects', [
+            'title' => 'changed'
+        ]);
+    }
+
+    /** @test */
     public function a_authenticated_user_can_view_only_project_that_he_created()
     {
         $auth_user = factory(User::class)->create();
