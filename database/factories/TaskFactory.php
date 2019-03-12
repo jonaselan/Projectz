@@ -26,6 +26,6 @@ $factory->define(Task::class, function (Faker $faker) {
     ];
 });
 
-$factory->state(Task::class, 'imcompleted', [
+$factory->state(Task::class, 'incomplete', [
    'completed' => false
 ]);
